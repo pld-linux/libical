@@ -1,34 +1,55 @@
 Summary:	libical
+Summary(pl):	Biblioteka libical
 Name:		libical
 Version:	0.23
 Release:	0.1
 License:	GPL and MPL
-Group:		Library
+Group:		Libraries
 Source0:	http://softwarestudio.org/download/%{name}-%{version}.tar.gz
 URL:		http://softwarestudio.org/libical/
-BuildRequires:	swig
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool
 BuildRequires:	perl
 BuildRequires:	python
+BuildRequires:	swig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-Libical is an Open Source implementation of the IETF's iCalendar Calendaring
-and Scheduling protocols. (RFC 2445, 2446, and 2447). It parses iCal components
-and provides a C API for manipulating the component properties, parameters, and
-subcomponents.
+Libical is an Open Source implementation of the IETF's iCalendar
+Calendaring and Scheduling protocols (RFC 2445, 2446, and 2447). It
+parses iCal components and provides a C API for manipulating the
+component properties, parameters, and subcomponents.
 
+%description -l pl
+Libical jest implementacj± Open Source protoko³ów IETF iCalendar
+Calendaring oraz iCalendar Scheduling (RFC 2445, 2446 i 2447).
+Biblioteka ta analizuje sk³adniki iCal i udostêpnia API w C do obróbki
+opcji, parametrów i podkomponentów w komponentach iCal.
 
 %package devel
-Summary:	-
-Group:		-
+Summary:	libical header files
+Summary(pl):	Pliki nag³ówkowe libical
+Group:		Development/Libraries
+Requires:	%{name} = %{version}
 
 %description devel
+libical header files.
+
+%description devel -l pl
+Pliki nag³ówkowe libical.
 
 %package static
-Summary:	-
-Group:		-
+Summary:	libical static library
+Summary(pl):	Statyczna biblioteka libical
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}
 
 %description static
+Static version of libical library.
+
+%description static -l pl
+Statyczna wersja biblioteki libical.
 
 %prep
 %setup -q 
@@ -49,7 +70,6 @@ install -d $RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
 
 %post   -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
