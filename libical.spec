@@ -6,6 +6,7 @@ Release:	0.2
 License:	MPL/GPL
 Group:		Libraries
 Source0:	http://softwarestudio.org/download/%{name}-%{version}.tar.gz
+# Source0-md5:	ac4a2738be4e00131208e01a0c4891ea
 URL:		http://softwarestudio.org/libical/
 BuildRequires:	autoconf
 BuildRequires:	automake
