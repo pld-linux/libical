@@ -53,7 +53,7 @@ Static version of libical library.
 Statyczna wersja biblioteki libical.
 
 %prep
-%setup -q 
+%setup -q
 
 %build
 %{__libtoolize}
