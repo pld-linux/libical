@@ -11,7 +11,7 @@ URL:		http://softwarestudio.org/libical/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
-BuildRequires:	perl
+BuildRequires:	perl-base
 BuildRequires:	python
 BuildRequires:	swig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
