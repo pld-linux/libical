@@ -2,8 +2,8 @@ Summary:	libical
 Summary(pl):	Biblioteka libical
 Name:		libical
 Version:	0.23
-Release:	0.1
-License:	GPL and MPL
+Release:	0.2
+License:	MPL/GPL
 Group:		Libraries
 Source0:	http://softwarestudio.org/download/%{name}-%{version}.tar.gz
 URL:		http://softwarestudio.org/libical/
