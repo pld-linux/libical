@@ -1,4 +1,4 @@
-Summary:	libical
+Summary:	libical library
 Summary(pl):	Biblioteka libical
 Name:		libical
 Version:	0.23
