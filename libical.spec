@@ -1,12 +1,12 @@
 Summary:	libical library
 Summary(pl):	Biblioteka libical
 Name:		libical
-Version:	0.23a
+Version:	0.24
 Release:	0.1
 License:	MPL/GPL
 Group:		Libraries
-Source0:	http://softwarestudio.org/download/%{name}-%{version}.tar.gz
-# Source0-md5:	32a398b4cd1d01ff379d029d1962481c
+Source0:	http://dl.sourceforge.net/sourceforge/freeassociation/%{name}-%{version}.RC4.tar.gz
+# Source0-md5:	3c69b77391fa1b10645335b738c14aa7
 URL:		http://softwarestudio.org/libical/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -56,9 +56,6 @@ Statyczna wersja biblioteki libical.
 %setup -q
 
 %build
-%{__libtoolize}
-%{__aclocal}
-%{__autoconf}
 %configure \
 	--enable-python-bindings
 %{__make}
