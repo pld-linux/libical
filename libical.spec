@@ -2,10 +2,11 @@ Summary:	libical library
 Summary(pl):	Biblioteka libical
 Name:		libical
 Version:	0.24
-Release:	0.1
+%define	bver	RC4
+Release:	0.%{bver}.1
 License:	MPL/GPL
 Group:		Libraries
-Source0:	http://dl.sourceforge.net/sourceforge/freeassociation/%{name}-%{version}.RC4.tar.gz
+Source0:	http://dl.sourceforge.net/freeassociation/%{name}-%{version}.%{bver}.tar.gz
 # Source0-md5:	3c69b77391fa1b10645335b738c14aa7
 URL:		http://softwarestudio.org/libical/
 BuildRequires:	autoconf
@@ -32,7 +33,7 @@ opcji, parametrów i podkomponentów w komponentach iCal.
 Summary:	libical header files
 Summary(pl):	Pliki nag³ówkowe libical
 Group:		Development/Libraries
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 libical header files.
@@ -44,7 +45,7 @@ Pliki nag³ówkowe libical.
 Summary:	libical static library
 Summary(pl):	Statyczna biblioteka libical
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static version of libical library.
@@ -64,7 +65,8 @@ Statyczna wersja biblioteki libical.
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT
 
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -80,7 +82,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %doc doc/UsingLibical*
-%{_libdir}/lib*.so
+%attr(755,root,root) %{_libdir}/lib*.so
 %{_libdir}/lib*.la
 %{_includedir}/*
 
