@@ -14,7 +14,7 @@ BuildRequires:	automake
 BuildRequires:	libtool
 BuildRequires:	perl-base
 BuildRequires:	python
-BuildRequires:	swig
+# swig is checked for by configure, but not used
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -58,7 +58,7 @@ Statyczna wersja biblioteki libical.
 
 %build
 %configure \
-	--enable-python-bindings
+	--enable-python
 %{__make}
 
 %install
