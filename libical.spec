@@ -57,6 +57,7 @@ Statyczna wersja biblioteki libical.
 %setup -q
 
 %build
+cp -f /usr/share/automake/config.sub .
 %configure \
 	--enable-python
 %{__make}
