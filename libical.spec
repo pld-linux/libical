@@ -1,5 +1,5 @@
 Summary:	libical library
-Summary(pl):	Biblioteka libical
+Summary(pl.UTF-8):   Biblioteka libical
 Name:		libical
 Version:	0.24
 %define	bver	RC4
@@ -23,34 +23,34 @@ Calendaring and Scheduling protocols (RFC 2445, 2446, and 2447). It
 parses iCal components and provides a C API for manipulating the
 component properties, parameters, and subcomponents.
 
-%description -l pl
-Libical jest implementacj± Open Source protoko≥Ûw IETF iCalendar
+%description -l pl.UTF-8
+Libical jest implementacjƒÖ Open Source protoko≈Ç√≥w IETF iCalendar
 Calendaring oraz iCalendar Scheduling (RFC 2445, 2446 i 2447).
-Biblioteka ta analizuje sk≥adniki iCal i udostÍpnia API w C do obrÛbki
-opcji, parametrÛw i podkomponentÛw w komponentach iCal.
+Biblioteka ta analizuje sk≈Çadniki iCal i udostƒôpnia API w C do obr√≥bki
+opcji, parametr√≥w i podkomponent√≥w w komponentach iCal.
 
 %package devel
 Summary:	libical header files
-Summary(pl):	Pliki nag≥Ûwkowe libical
+Summary(pl.UTF-8):   Pliki nag≈Ç√≥wkowe libical
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
 libical header files.
 
-%description devel -l pl
-Pliki nag≥Ûwkowe libical.
+%description devel -l pl.UTF-8
+Pliki nag≈Ç√≥wkowe libical.
 
 %package static
 Summary:	libical static library
-Summary(pl):	Statyczna biblioteka libical
+Summary(pl.UTF-8):   Statyczna biblioteka libical
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static version of libical library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna wersja biblioteki libical.
 
 %prep
