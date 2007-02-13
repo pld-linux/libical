@@ -1,5 +1,5 @@
 Summary:	libical library
-Summary(pl.UTF-8):   Biblioteka libical
+Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
 Version:	0.24
 %define	bver	RC4
@@ -31,7 +31,7 @@ opcji, parametrów i podkomponentów w komponentach iCal.
 
 %package devel
 Summary:	libical header files
-Summary(pl.UTF-8):   Pliki nagłówkowe libical
+Summary(pl.UTF-8):	Pliki nagłówkowe libical
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -43,7 +43,7 @@ Pliki nagłówkowe libical.
 
 %package static
 Summary:	libical static library
-Summary(pl.UTF-8):   Statyczna biblioteka libical
+Summary(pl.UTF-8):	Statyczna biblioteka libical
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
