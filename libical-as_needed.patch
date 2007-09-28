@@ -1,0 +1,10 @@
+--- libical-0.24/src/libical/Makefile.am.orig	2007-09-28 15:00:58.038229021 +0000
++++ libical-0.24/src/libical/Makefile.am	2007-09-28 15:02:18.026026383 +0000
+@@ -54,6 +54,7 @@
+ 
+ libical_la_LDFLAGS = -version-info 0:0:0
+ 
++libical_la_LIBADD = -lpthread
+ 
+ libical_la_SOURCES =		\
+ 	$(BUILT_SOURCES)	\
