@@ -1,3 +1,6 @@
+# TODO:
+#	installed but unpackaged files: /usr/share/libical/zoneinfo/*
+#
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
@@ -8,6 +11,7 @@ License:	MPL/GPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/freeassociation/%{name}-%{version}.%{bver}.tar.gz
 # Source0-md5:	3c69b77391fa1b10645335b738c14aa7
+Patch0:		%{name}-as_needed.patch
 URL:		http://softwarestudio.org/libical/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -55,12 +59,17 @@ Statyczna wersja biblioteki libical.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
+%{__libtoolize}
+%{__aclocal}
+%{__automake}
+%{__autoconf}
 %configure \
 	--enable-python
-%{__make}
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
