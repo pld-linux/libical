@@ -4,15 +4,14 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	0.24
-%define	bver	RC4
-Release:	0.%{bver}.1
+Version:	0.27
+Release:	1
 License:	MPL/GPL
 Group:		Libraries
-Source0:	http://dl.sourceforge.net/freeassociation/%{name}-%{version}.%{bver}.tar.gz
-# Source0-md5:	3c69b77391fa1b10645335b738c14aa7
+Source0:	http://dl.sourceforge.net/freeassociation/%{name}-%{version}.tar.gz
+# Source0-md5:	87d48321bff08de08794132d60b55d94
 Patch0:		%{name}-as_needed.patch
-URL:		http://softwarestudio.org/libical/
+URL:		http://www.softwarestudio.org/softwarestudio/app.php/libical	
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
