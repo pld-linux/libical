@@ -11,7 +11,7 @@ Group:		Libraries
 Source0:	http://dl.sourceforge.net/freeassociation/%{name}-%{version}.tar.gz
 # Source0-md5:	87d48321bff08de08794132d60b55d94
 Patch0:		%{name}-as_needed.patch
-URL:		http://www.softwarestudio.org/softwarestudio/app.php/libical	
+URL:		http://sourceforge.net/projects/freeassociation/	
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
