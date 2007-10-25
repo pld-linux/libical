@@ -1,12 +1,9 @@
-# TODO:
-#	installed but unpackaged files: /usr/share/libical/zoneinfo/*
-#
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
 Version:	0.27
 Release:	1
-License:	MPL/GPL
+License:	MPL 1.0 or LGPL v2.1
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/freeassociation/%{name}-%{version}.tar.gz
 # Source0-md5:	87d48321bff08de08794132d60b55d94
@@ -61,10 +58,10 @@ Statyczna wersja biblioteki libical.
 %patch0 -p1
 
 %build
-cp -f /usr/share/automake/config.sub .
 %{__libtoolize}
 %{__aclocal}
 %{__automake}
+%{__autoheader}
 %{__autoconf}
 %configure \
 	--enable-python
@@ -86,15 +83,22 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README ChangeLog NEWS THANKS TODO AUTHORS
-%attr(755,root,root) %{_libdir}/lib*.so.*.*
+%attr(755,root,root) %{_libdir}/libical.so.*.*.*
+%attr(755,root,root) %{_libdir}/libicalss.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libical.so.0
+%attr(755,root,root) %ghost %{_libdir}/libicalss.so.0
+%{_datadir}/libical
 
 %files devel
 %defattr(644,root,root,755)
 %doc doc/UsingLibical*
-%attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/lib*.la
-%{_includedir}/*
+%attr(755,root,root) %{_libdir}/libical.so
+%attr(755,root,root) %{_libdir}/libicalss.so
+%{_libdir}/libical.la
+%{_libdir}/libicalss.la
+%{_includedir}/ical*.h
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/libical.a
+%{_libdir}/libicalss.a
