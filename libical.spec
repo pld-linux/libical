@@ -65,7 +65,7 @@ Statyczna wersja biblioteki libical.
 %{__autoconf}
 %configure \
 	--enable-python
-%{__make} -j1
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
