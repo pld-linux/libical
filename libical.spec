@@ -1,20 +1,21 @@
+# TODO: enable and package C++, java, python bindings
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	0.27
+Version:	0.31
 Release:	1
-License:	MPL 1.0 or LGPL v2.1
+License:	MPL 1.1 or LGPL v2.1
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/freeassociation/%{name}-%{version}.tar.gz
-# Source0-md5:	87d48321bff08de08794132d60b55d94
+# Source0-md5:	39382c919abd9abfab6ecba27715eaa5
 Patch0:		%{name}-as_needed.patch
-URL:		http://sourceforge.net/projects/freeassociation/	
-BuildRequires:	autoconf
+URL:		http://freeassociation.sourceforge.net/
+BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
 BuildRequires:	libtool
 BuildRequires:	perl-base
 BuildRequires:	python
-# swig is checked for by configure, but not used
+# swig for python bindings
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -82,23 +83,29 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README ChangeLog NEWS THANKS TODO AUTHORS
+%doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
 %attr(755,root,root) %{_libdir}/libical.so.*.*.*
-%attr(755,root,root) %{_libdir}/libicalss.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libical.so.0
+%attr(755,root,root) %{_libdir}/libicalss.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libicalss.so.0
-%{_datadir}/libical
+%attr(755,root,root) %{_libdir}/libicalvcal.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libicalvcal.so.0
 
 %files devel
 %defattr(644,root,root,755)
 %doc doc/UsingLibical*
 %attr(755,root,root) %{_libdir}/libical.so
 %attr(755,root,root) %{_libdir}/libicalss.so
+%attr(755,root,root) %{_libdir}/libicalvcal.so
 %{_libdir}/libical.la
 %{_libdir}/libicalss.la
+%{_libdir}/libicalvcal.la
 %{_includedir}/ical*.h
+%{_includedir}/pvl.h
+%{_includedir}/sspm.h
 
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libical.a
 %{_libdir}/libicalss.a
+%{_libdir}/libicalvcal.a
