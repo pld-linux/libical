@@ -1,10 +1,62 @@
---- libical-0.24/src/libical/Makefile.am.orig	2007-09-28 15:00:58.038229021 +0000
-+++ libical-0.24/src/libical/Makefile.am	2007-09-28 15:02:18.026026383 +0000
-@@ -54,6 +54,7 @@
+--- libical-0.32/src/libical/Makefile.am.orig	2008-09-01 18:31:32.000000000 +0200
++++ libical-0.32/src/libical/Makefile.am	2008-09-02 19:37:30.924979766 +0200
+@@ -119,6 +119,7 @@
+ 	icalvalue_cxx.h		\
+ 	icalvalue_cxx.cpp       \
+ 	icptrholder.h
++libical_cxx_la_LIBADD = $(PTHREAD_LIBS)
+ endif
  
- libical_la_LDFLAGS = -version-info 0:0:0
+ libical_includedir = $(includedir)/libical
+--- libical-0.32/src/test/Makefile.am.orig	2008-09-01 18:21:02.000000000 +0200
++++ libical-0.32/src/test/Makefile.am	2008-09-02 19:27:11.248981442 +0200
+@@ -1,14 +1,7 @@
+ if WITH_CXX_BINDINGS
+ cxx_inc=-DWITH_CXX_BINDINGS
+ cxx_libs=../libical/libical_cxx.la
+-regression_cxx_SOURCES = 		\
+-	regression.c		\
+-	regression.h		\
+-	regression-component.c	\
+-	regression-classify.c	\
+-	regression-utils.c	\
+-	regression-recur.c	\
+-	regression-storage.c	\
++cxx_src = 		\
+ 	regression-cxx.cpp
+ else
+ cxx_inc=
+@@ -50,7 +43,8 @@
+ 	regression-classify.c	\
+ 	regression-utils.c	\
+ 	regression-recur.c	\
+-	regression-storage.c
++	regression-storage.c	\
++	$(cxx_src)
  
-+libical_la_LIBADD = -lpthread
  
- libical_la_SOURCES =		\
- 	$(BUILT_SOURCES)	\
+ TESTS=regression
+--- libical-0.32/src/libicalss/Makefile.am.orig	2008-09-01 18:31:41.000000000 +0200
++++ libical-0.32/src/libicalss/Makefile.am	2008-09-02 20:04:12.696982280 +0200
+@@ -64,7 +64,7 @@
+ 	$(BDB_INCLUDE)
+ 
+ libicalss_la_LDFLAGS = -version-info 32:0:32
+-libicalss_la_LIBADD = $(BDB_LIBFILES) 
++libicalss_la_LIBADD = $(BDB_LIBFILES) $(top_builddir)/src/libical/libical.la
+ 
+ if DEV
+ libicalss_la_DEVSOURCES = icalsslexer.l icalssyacc.y
+@@ -115,10 +115,10 @@
+ 
+ if WITH_CXX_BINDINGS
+ libicalss_cxx_la_SOURCES =	\
+-	$(libicalss_evolution_la_SOURCES)	\
++	$(libicalss_la_SOURCES)	\
+ 	icalspanlist_cxx.h	\
+ 	icalspanlist_cxx.cpp
+-
++libicalss_cxx_la_LIBADD = $(top_builddir)/src/libical/libical_cxx.la
+ endif
+ 
+ icalss.h: $(COMBINEDHEADERS)
