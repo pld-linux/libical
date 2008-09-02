@@ -1,4 +1,4 @@
-# TODO: enable and package C++, java, python bindings
+# TODO: java, perl, python bindings (not ready in sources)
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
@@ -14,7 +14,7 @@ BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
 BuildRequires:	libtool
 BuildRequires:	perl-base
-BuildRequires:	python
+#BuildRequires:	python
 # swig for python bindings
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -54,6 +54,43 @@ Static version of libical library.
 %description static -l pl.UTF-8
 Statyczna wersja biblioteki libical.
 
+%package c++
+Summary:	C++ bindings for libical libraries
+Summary(pl.UTF-8):	Wiązania C++ dla bibliotek libical
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description c++
+C++ bindings for libical libraries.
+
+%description c++ -l pl.UTF-8
+Wiązania C++ dla bibliotek libical.
+
+%package c++-devel
+Summary:	Header files for libical C++ bindings
+Summary(pl.UTF-8):	Pliki nagłówkowe wiązań C++ dla bibliotek libical
+Group:		Development/Libraries
+Requires:	%{name}-c++ = %{version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	libstdc++-devel
+
+%description c++-devel
+Header files for libical C++ bindings.
+
+Pliki nagłówkowe wiązań C++ dla bibliotek libical.
+
+%package c++-static
+Summary:	Static libraries of libical C++ bindings
+Summary(pl.UTF-8):	Statyczne biblioteki wiązań C++ dla bibliotek libical
+Group:		Development/Libraries
+Requires:	%{name}-c++-devel = %{version}-%{release}
+
+%description c++-static
+Static libraries of libical C++ bindings.
+
+%description c++-static -l pl.UTF-8
+Statyczne biblioteki wiązań C++ dla bibliotek libical.
+
 %prep
 %setup -q
 %patch0 -p1
@@ -65,12 +102,11 @@ Statyczna wersja biblioteki libical.
 %{__autoheader}
 %{__autoconf}
 %configure \
-	--enable-python
+	--enable-cxx
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -78,8 +114,11 @@ install -d $RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post   -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
+
+%post	c++ -p /sbin/ldconfig
+%postun	c++ -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
@@ -101,7 +140,49 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libicalss.la
 %{_libdir}/libicalvcal.la
 %{_includedir}/ical.h
-%{_includedir}/libical
+%dir %{_includedir}/libical
+# libical
+%{_includedir}/libical/ical.h
+%{_includedir}/libical/icalarray.h
+%{_includedir}/libical/icalattach.h
+%{_includedir}/libical/icalcomponent.h
+%{_includedir}/libical/icalderivedparameter.h
+%{_includedir}/libical/icalderivedproperty.h
+%{_includedir}/libical/icalderivedvalue.h
+%{_includedir}/libical/icalduration.h
+%{_includedir}/libical/icalenums.h
+%{_includedir}/libical/icalerror.h
+%{_includedir}/libical/icallangbind.h
+%{_includedir}/libical/icalmemory.h
+%{_includedir}/libical/icalmime.h
+%{_includedir}/libical/icalparameter.h
+%{_includedir}/libical/icalparser.h
+%{_includedir}/libical/icalperiod.h
+%{_includedir}/libical/icalproperty.h
+%{_includedir}/libical/icalrecur.h
+%{_includedir}/libical/icalrestriction.h
+%{_includedir}/libical/icaltime.h
+%{_includedir}/libical/icaltimezone.h
+%{_includedir}/libical/icaltypes.h
+%{_includedir}/libical/icaltz-util.h
+%{_includedir}/libical/icalvalue.h
+%{_includedir}/libical/pvl.h
+%{_includedir}/libical/sspm.h
+# libicalss
+%{_includedir}/libical/icalcalendar.h
+%{_includedir}/libical/icalclassify.h
+%{_includedir}/libical/icalcluster.h
+%{_includedir}/libical/icaldirset.h
+%{_includedir}/libical/icaldirsetimpl.h
+%{_includedir}/libical/icalfileset.h
+%{_includedir}/libical/icalfilesetimpl.h
+%{_includedir}/libical/icalgauge.h
+%{_includedir}/libical/icalgaugeimpl.h
+%{_includedir}/libical/icalmessage.h
+%{_includedir}/libical/icalset.h
+%{_includedir}/libical/icalspanlist.h
+%{_includedir}/libical/icalss.h
+%{_includedir}/libical/icalssyacc.h
 %{_includedir}/libicalvcal
 
 %files static
@@ -109,3 +190,27 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libical.a
 %{_libdir}/libicalss.a
 %{_libdir}/libicalvcal.a
+
+%files c++
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libical_cxx.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libical_cxx.so.0
+%attr(755,root,root) %{_libdir}/libicalss_cxx.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libicalss_cxx.so.0
+
+%files c++-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libical_cxx.so
+%attr(755,root,root) %{_libdir}/libicalss_cxx.so
+%{_libdir}/libical_cxx.la
+%{_libdir}/libicalss_cxx.la
+%{_includedir}/libical/icalparameter_cxx.h
+%{_includedir}/libical/icalproperty_cxx.h
+%{_includedir}/libical/icalvalue_cxx.h
+%{_includedir}/libical/icptrholder.h
+%{_includedir}/libical/vcomponent.h
+
+%files c++-static
+%defattr(644,root,root,755)
+%{_libdir}/libical_cxx.a
+%{_libdir}/libicalss_cxx.a
