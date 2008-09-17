@@ -2,12 +2,12 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	0.32
+Version:	0.33
 Release:	1
 License:	MPL 1.1 or LGPL v2.1
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/freeassociation/%{name}-%{version}.tar.gz
-# Source0-md5:	7e38be0c75769e62b7f76c5b6f373db9
+# Source0-md5:	6e25395678a0170f5da0433120ba91bf
 Patch0:		%{name}-as_needed.patch
 URL:		http://freeassociation.sourceforge.net/
 BuildRequires:	autoconf >= 2.52
@@ -139,6 +139,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libical.la
 %{_libdir}/libicalss.la
 %{_libdir}/libicalvcal.la
+%{_pkgconfigdir}/libical.pc
 %{_includedir}/ical.h
 %dir %{_includedir}/libical
 # libical
