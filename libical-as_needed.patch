@@ -13,15 +13,6 @@ diff -urN libical-0.43/src/libical/Makefile.am libical-0.43.new/src/libical/Make
 diff -urN libical-0.43/src/libicalss/Makefile.am libical-0.43.new/src/libicalss/Makefile.am
 --- libical-0.43/src/libicalss/Makefile.am	2009-01-08 17:50:22.000000000 +0100
 +++ libical-0.43.new/src/libicalss/Makefile.am	2009-03-07 14:55:23.000000000 +0100
-@@ -64,7 +64,7 @@
- 	$(BDB_INCLUDE)
- 
- libicalss_la_LDFLAGS = -version-info 43:0:43
--libicalss_la_LIBADD = $(BDB_LIBFILES) 
-+libicalss_la_LIBADD = $(BDB_LIBFILES) $(top_builddir)/src/libical/libical.la
- 
- if DEV
- libicalss_la_DEVSOURCES = icalsslexer.l icalssyacc.y
 @@ -115,10 +115,11 @@
  
  if WITH_CXX_BINDINGS
