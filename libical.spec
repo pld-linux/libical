@@ -13,6 +13,7 @@ Patch1:		%{name}-cxx.patch
 URL:		http://freeassociation.sourceforge.net/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
+BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	perl-base
 #BuildRequires:	python
