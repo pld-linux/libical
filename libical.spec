@@ -2,19 +2,19 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	0.46
+Version:	0.47
 Release:	1
 License:	MPL 1.1 or LGPL v2.1
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/freeassociation/%{name}-%{version}.tar.gz
-# Source0-md5:	9c08f88945bfd5d0791d102e4aa4125c
+# Source0-md5:	21f7f8a21e3d857c9476be732e52dc32
 Patch0:		%{name}-as_needed.patch
 Patch1:		%{name}-cxx.patch
 URL:		http://freeassociation.sourceforge.net/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool
+BuildRequires:	libtool >= 2:1.5
 BuildRequires:	perl-base
 #BuildRequires:	python
 # swig for python bindings
