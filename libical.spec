@@ -1,4 +1,8 @@
-# TODO: java, perl, python bindings (not ready in sources)
+# TODO: java, perl bindings (not ready in sources)
+#
+# Conditional build:
+%bcond_without	python	# Python binding
+#
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
@@ -17,7 +21,12 @@ BuildRequires:	automake
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:1.5
 BuildRequires:	perl-base
-#BuildRequires:	python
+%if %{with python}
+BuildRequires:	python-devel >= 1:2.3
+BuildRequires:	rpm-pythonprov
+BuildRequires:	rpmbuild(macros) >= 1.219
+BuildRequires:	swig-python
+%endif
 # swig for python bindings
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -94,6 +103,18 @@ Static libraries of libical C++ bindings.
 %description c++-static -l pl.UTF-8
 Statyczne biblioteki wiązań C++ dla bibliotek libical.
 
+%package -n python-libical
+Summary:	Python binding for libical
+Summary(pl.UTF-8):	Wiązanie Pythona do biblioteki libical
+Group:		Libraries/Python
+Requires:	%{name} = %{version}-%{release}
+
+%description -n python-libical
+Python binding for libical.
+
+%description -n python-libical -l pl.UTF-8
+Wiązanie Pythona do biblioteki libical.
+
 %prep
 %setup -q
 %patch0 -p1
@@ -107,7 +128,8 @@ Statyczne biblioteki wiązań C++ dla bibliotek libical.
 %{__autoheader}
 %{__automake}
 %configure \
-	--enable-cxx
+	--enable-cxx \
+	%{?with_python:--enable-python}
 %{__make}
 
 %install
@@ -115,6 +137,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+%if %{with python}
+%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/_LibicalWrap.{la,a}
+%py_postclean
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -225,3 +252,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libical_cxx.a
 %{_libdir}/libicalss_cxx.a
+
+%if %{with python}
+%files -n python-libical
+%defattr(644,root,root,755)
+%attr(755,root,root) %{py_sitedir}/_LibicalWrap.so
+%{py_sitescriptdir}/libical
+%endif
