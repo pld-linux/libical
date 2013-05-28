@@ -2,14 +2,15 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	0.47
+Version:	1.0
 Release:	1
 License:	MPL 1.1 or LGPL v2.1
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/freeassociation/%{name}-%{version}.tar.gz
-# Source0-md5:	21f7f8a21e3d857c9476be732e52dc32
+# Source0-md5:	4438c31d00ec434f02867a267a92f8a1
 Patch0:		%{name}-as_needed.patch
 Patch1:		%{name}-cxx.patch
+Patch2:		%{name}-ac.patch
 URL:		http://freeassociation.sourceforge.net/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
@@ -97,6 +98,7 @@ Statyczne biblioteki wiązań C++ dla bibliotek libical.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
