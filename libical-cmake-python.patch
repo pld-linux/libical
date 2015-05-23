@@ -1,0 +1,46 @@
+--- libical-1.0.1/src/python/CMakeLists.txt.orig	2014-10-09 17:07:05.000000000 +0200
++++ libical-1.0.1/src/python/CMakeLists.txt	2015-05-22 23:09:19.135319563 +0200
+@@ -6,19 +6,28 @@
+ 
+ ########### next target ###############
+ 
++find_package(PythonInterp REQUIRED)
++find_package(PythonLibs REQUIRED)
++include_directories(${PYTHON_INCLUDE_DIRS} ${CMAKE_BINARY_DIR}/src ${CMAKE_BINARY_DIR})
++add_custom_command(
++  OUTPUT
++  ${CMAKE_BINARY_DIR}/src/python/LibicalWrap.c
++  COMMAND
++  swig -python -Wall -I${CMAKE_SOURCE_DIR}/src -I${CMAKE_BINARY_DIR}/src -o ${CMAKE_BINARY_DIR}/src/python/LibicalWrap.c ${CMAKE_SOURCE_DIR}/src/python/LibicalWrap.i
++  DEPENDS ${CMAKE_SOURCE_DIR}/src/python/LibicalWrap.i
++)
+ set(LibicalWrap_LIB_SRCS
+-  LibicalWrap.c
++  ${CMAKE_BINARY_DIR}/src/python/LibicalWrap.c
+ )
+ 
+ add_library(LibicalWrap ${LIBRARY_TYPE} ${LibicalWrap_LIB_SRCS})
+ 
+ target_link_libraries(LibicalWrap)
+ 
+ set_target_properties(LibicalWrap PROPERTIES
+-  VERSION ${LIBICAL_LIB_VERSION_STRING}
+-  SOVERSION ${LIBICAL_LIB_MAJOR_VERSION}
+-)
+-install(TARGETS LibicalWrap DESTINATION lib)
++  OUTPUT_NAME "_LibicalWrap" PREFIX "")
++set(PY_SITEDIR lib${LIB_SUFFIX}/python CACHE STRING "Python module dir")
++install(TARGETS LibicalWrap DESTINATION ${PY_SITEDIR})
+ 
+ ########### install files ###############
+ 
+--- libical-1.0.1/src/CMakeLists.txt.orig	2015-05-22 23:09:54.765318068 +0200
++++ libical-1.0.1/src/CMakeLists.txt	2015-05-22 23:09:58.838651230 +0200
+@@ -1,6 +1,7 @@
+ add_subdirectory(libical)
+ add_subdirectory(libicalss)
+ add_subdirectory(libicalvcal)
++add_subdirectory(python)
+ add_subdirectory(test)
+ 
+ if(MSVC)

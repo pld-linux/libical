@@ -6,20 +6,19 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	1.0
-Release:	2
-License:	MPL 1.1 or LGPL v2.1
+Version:	1.0.1
+Release:	1
+License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
-Source0:	http://downloads.sourceforge.net/freeassociation/%{name}-%{version}.tar.gz
-# Source0-md5:	4438c31d00ec434f02867a267a92f8a1
-Patch0:		%{name}-as_needed.patch
-Patch1:		%{name}-cxx.patch
-Patch2:		%{name}-ac.patch
-URL:		http://freeassociation.sourceforge.net/
-BuildRequires:	autoconf >= 2.52
-BuildRequires:	automake
+Source0:	https://github.com/libical/libical/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	af91db06b22559f863869c5a382ad08a
+Patch0:		%{name}-cxx.patch
+Patch1:		%{name}-cmake-cxx.patch
+Patch2:		%{name}-cmake-python.patch
+URL:		http://libical.github.io/libical/
+BuildRequires:	cmake >= 2.8.9
+BuildRequires:	gobject-introspection-devel >= 0.6.7
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool >= 2:1.5
 BuildRequires:	perl-base
 %if %{with python}
 BuildRequires:	python-devel >= 1:2.3
@@ -118,27 +117,29 @@ Wiązanie Pythona do biblioteki libical.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%if %{with python}
 %patch2 -p1
+%endif
 
 %build
-%{__libtoolize}
-%{__aclocal}
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-%configure \
-	--enable-cxx \
-	%{?with_python:--enable-python}
+install -d build
+cd build
+%cmake .. \
+	-DGOBJECT_INSTROSPECTION=ON \
+	-DPYTHON_EXECUTABLE=%{__python} \
+	-DPY_SITEDIR=%{py_sitedir}
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %if %{with python}
-%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/_LibicalWrap.{la,a}
+# not installed by cmake build system
+install -d $RPM_BUILD_ROOT%{py_sitescriptdir}/libical
+cp -p src/python/*.py build/src/python/*.py $RPM_BUILD_ROOT%{py_sitescriptdir}/libical
 %py_postclean
 %endif
 
@@ -153,13 +154,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%doc AUTHORS COPYING ReadMe.txt ReleaseNotes.txt THANKS TODO
 %attr(755,root,root) %{_libdir}/libical.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libical.so.0
+%attr(755,root,root) %ghost %{_libdir}/libical.so.1
 %attr(755,root,root) %{_libdir}/libicalss.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalss.so.0
+%attr(755,root,root) %ghost %{_libdir}/libicalss.so.1
 %attr(755,root,root) %{_libdir}/libicalvcal.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalvcal.so.0
+%attr(755,root,root) %ghost %{_libdir}/libicalvcal.so.1
 
 %files devel
 %defattr(644,root,root,755)
@@ -167,9 +168,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libical.so
 %attr(755,root,root) %{_libdir}/libicalss.so
 %attr(755,root,root) %{_libdir}/libicalvcal.so
-%{_libdir}/libical.la
-%{_libdir}/libicalss.la
-%{_libdir}/libicalvcal.la
 %{_pkgconfigdir}/libical.pc
 %{_includedir}/ical.h
 %dir %{_includedir}/libical
@@ -221,6 +219,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libical/vcaltmp.h
 %{_includedir}/libical/vcc.h
 %{_includedir}/libical/vobject.h
+%{_libdir}/cmake/LibIcal
 
 %files static
 %defattr(644,root,root,755)
@@ -231,16 +230,14 @@ rm -rf $RPM_BUILD_ROOT
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libical_cxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libical_cxx.so.0
+%attr(755,root,root) %ghost %{_libdir}/libical_cxx.so.1
 %attr(755,root,root) %{_libdir}/libicalss_cxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalss_cxx.so.0
+%attr(755,root,root) %ghost %{_libdir}/libicalss_cxx.so.1
 
 %files c++-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libical_cxx.so
 %attr(755,root,root) %{_libdir}/libicalss_cxx.so
-%{_libdir}/libical_cxx.la
-%{_libdir}/libicalss_cxx.la
 %{_includedir}/libical/icalparameter_cxx.h
 %{_includedir}/libical/icalproperty_cxx.h
 %{_includedir}/libical/icalvalue_cxx.h

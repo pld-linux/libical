@@ -1,0 +1,63 @@
+--- libical-1.0.1/src/libical/CMakeLists.txt.orig	2014-10-09 17:07:05.000000000 +0200
++++ libical-1.0.1/src/libical/CMakeLists.txt	2015-05-22 20:52:44.858996775 +0200
+@@ -336,3 +336,36 @@
+   DESTINATION
+   ${INCLUDE_INSTALL_DIR}/libical
+ )
++
++set(icalcxx_LIB_SRCS ical
++  icalparameter_cxx.cpp
++  icalparameter_cxx.h
++  icalproperty_cxx.cpp
++  icalproperty_cxx.h
++  icalvalue_cxx.cpp
++  icalvalue_cxx.h
++  icptrholder.h
++  vcomponent.cpp
++  vcomponent.h
++)
++add_library(ical_cxx ${LIBRARY_TYPE} ${icalcxx_LIB_SRCS})
++target_link_libraries(ical_cxx ical)
++add_dependencies(ical_cxx ical)
++set_target_properties(ical_cxx PROPERTIES
++  VERSION ${LIBICAL_LIB_VERSION_STRING}
++  SOVERSION ${LIBICAL_LIB_MAJOR_VERSION}
++)
++install(TARGETS ical_cxx DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
++if(NOT SHARED_ONLY)
++  add_library(ical_cxx-static STATIC ${icalcxx_LIB_SRCS})
++  set_target_properties(ical_cxx-static PROPERTIES OUTPUT_NAME "ical_cxx")
++  install(TARGETS ical_cxx-static DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
++endif()
++install(FILES
++  icalparameter_cxx.h
++  icalproperty_cxx.h
++  icalvalue_cxx.h
++  icptrholder.h
++  vcomponent.h
++  DESTINATION ${INCLUDE_INSTALL_DIR}/libical
++)
+--- libical-1.0.1/src/libicalss/CMakeLists.txt.orig	2014-10-09 17:07:05.000000000 +0200
++++ libical-1.0.1/src/libicalss/CMakeLists.txt	2015-05-22 20:59:42.102312598 +0200
+@@ -132,3 +132,21 @@
+   DESTINATION
+   ${INCLUDE_INSTALL_DIR}/libical
+ )
++
++set(icalsscxx_LIB_SRCS
++  icalbdbset_cxx.h
++  icalspanlist_cxx.cpp
++  icalspanlist_cxx.h
++)
++add_library(icalss_cxx ${LIBRARY_TYPE} ${icalsscxx_LIB_SRCS})
++target_link_libraries(icalss_cxx icalss ical_cxx)
++set_target_properties(icalss_cxx PROPERTIES
++  VERSION ${LIBICAL_LIB_VERSION_STRING}
++  SOVERSION ${LIBICAL_LIB_MAJOR_VERSION}
++)
++install(TARGETS icalss_cxx DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
++if(NOT SHARED_ONLY)
++  add_library(icalss_cxx-static STATIC ${icalss_LIB_SRCS})
++  set_target_properties(icalss_cxx-static PROPERTIES OUTPUT_NAME "icalss_cxx")
++  install(TARGETS icalss_cxx-static DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
++endif()
