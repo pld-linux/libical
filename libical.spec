@@ -128,7 +128,7 @@ cd build
 	-DGOBJECT_INSTROSPECTION=ON \
 	-DPYTHON_EXECUTABLE=%{__python} \
 	-DPY_SITEDIR=%{py_sitedir}
-%{__make}
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
