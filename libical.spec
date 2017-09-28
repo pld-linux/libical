@@ -6,15 +6,15 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	1.0.1
-Release:	2
+Version:	2.0.0
+Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 Source0:	https://github.com/libical/libical/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	af91db06b22559f863869c5a382ad08a
-Patch0:		%{name}-cxx.patch
-Patch1:		%{name}-cmake-cxx.patch
-Patch2:		%{name}-cmake-python.patch
+# Source0-md5:	6bf8e5f5a3ba88baf390d0134e05d76e
+Patch0:		%{name}-cmake-python.patch
+Patch1:		%{name}-python.patch
+Patch2:		%{name}-funcnamefix.patch
 URL:		http://libical.github.io/libical/
 BuildRequires:	cmake >= 2.8.9
 BuildRequires:	gobject-introspection-devel >= 0.6.7
@@ -115,11 +115,11 @@ Wiązanie Pythona do biblioteki libical.
 
 %prep
 %setup -q
+%if %{with python}
 %patch0 -p1
 %patch1 -p1
-%if %{with python}
-%patch2 -p1
 %endif
+%patch2 -p1
 
 %build
 install -d build
@@ -156,11 +156,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING ReadMe.txt ReleaseNotes.txt THANKS TODO
 %attr(755,root,root) %{_libdir}/libical.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libical.so.1
+%attr(755,root,root) %ghost %{_libdir}/libical.so.2
 %attr(755,root,root) %{_libdir}/libicalss.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalss.so.1
+%attr(755,root,root) %ghost %{_libdir}/libicalss.so.2
 %attr(755,root,root) %{_libdir}/libicalvcal.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalvcal.so.1
+%attr(755,root,root) %ghost %{_libdir}/libicalvcal.so.2
 
 %files devel
 %defattr(644,root,root,755)
@@ -169,7 +169,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libicalss.so
 %attr(755,root,root) %{_libdir}/libicalvcal.so
 %{_pkgconfigdir}/libical.pc
-%{_includedir}/ical.h
 %dir %{_includedir}/libical
 # libical
 %{_includedir}/libical/ical.h
@@ -196,6 +195,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libical/icaltypes.h
 %{_includedir}/libical/icaltz-util.h
 %{_includedir}/libical/icalvalue.h
+%{_includedir}/libical/libical_ical_export.h
 %{_includedir}/libical/pvl.h
 %{_includedir}/libical/sspm.h
 # libicalss
@@ -213,9 +213,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libical/icalspanlist.h
 %{_includedir}/libical/icalss.h
 %{_includedir}/libical/icalssyacc.h
+%{_includedir}/libical/libical_icalss_export.h
 # libicalvcal
 %{_includedir}/libical/icalvcal.h
-%{_includedir}/libical/port.h
+%{_includedir}/libical/libical_vcal_export.h
 %{_includedir}/libical/vcaltmp.h
 %{_includedir}/libical/vcc.h
 %{_includedir}/libical/vobject.h
@@ -230,9 +231,9 @@ rm -rf $RPM_BUILD_ROOT
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libical_cxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libical_cxx.so.1
+%attr(755,root,root) %ghost %{_libdir}/libical_cxx.so.2
 %attr(755,root,root) %{_libdir}/libicalss_cxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalss_cxx.so.1
+%attr(755,root,root) %ghost %{_libdir}/libicalss_cxx.so.2
 
 %files c++-devel
 %defattr(644,root,root,755)
@@ -241,8 +242,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libical/icalparameter_cxx.h
 %{_includedir}/libical/icalproperty_cxx.h
 %{_includedir}/libical/icalvalue_cxx.h
-%{_includedir}/libical/icptrholder.h
-%{_includedir}/libical/vcomponent.h
+%{_includedir}/libical/icalspanlist_cxx.h
+%{_includedir}/libical/icptrholder_cxx.h
+%{_includedir}/libical/vcomponent_cxx.h
 
 %files c++-static
 %defattr(644,root,root,755)

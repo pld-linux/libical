@@ -1,0 +1,11 @@
+--- libical-2.0.0/src/python/LibicalWrap.i.python	2017-09-26 21:25:34.525605103 +0200
++++ libical-2.0.0/src/python/LibicalWrap.i	2017-09-26 21:26:33.048928356 +0200
+@@ -24,6 +24,8 @@
+ 
+ %module LibicalWrap
+ 
++#define LIBICAL_ICAL_EXPORT
++#define LIBICAL_ICALSS_EXPORT
+ 
+ %{
+ #include "libical/ical.h"
