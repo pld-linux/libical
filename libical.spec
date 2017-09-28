@@ -11,7 +11,7 @@ Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 Source0:	https://github.com/libical/libical/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	6bf8e5f5a3ba88baf390d0134e05d76e
+# Source0-md5:	ab743a66927284ccf42ee28847550144
 Patch0:		%{name}-cmake-python.patch
 Patch1:		%{name}-python.patch
 Patch2:		%{name}-funcnamefix.patch
