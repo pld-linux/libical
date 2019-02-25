@@ -7,7 +7,7 @@ Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
 Version:	2.0.0
-Release:	1
+Release:	2
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 Source0:	https://github.com/libical/libical/archive/v%{version}/%{name}-%{version}.tar.gz
