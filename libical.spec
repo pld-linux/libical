@@ -1,15 +1,17 @@
 # TODO: java, perl bindings (not ready in sources)
 #
 # Conditional build:
+%bcond_with	db	# Berkeley DB storage support
 %bcond_without	python	# Python binding
 #
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
 Version:	2.0.0
-Release:	2
+Release:	3
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
+#Source0Download: https://github.com/libical/libical/releases
 Source0:	https://github.com/libical/libical/archive/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	ab743a66927284ccf42ee28847550144
 Patch0:		%{name}-cmake-python.patch
@@ -17,13 +19,15 @@ Patch1:		%{name}-python.patch
 Patch2:		%{name}-funcnamefix.patch
 URL:		http://libical.github.io/libical/
 BuildRequires:	cmake >= 2.8.9
+%{?with_db:BuildRequires:	db-devel}
 BuildRequires:	gobject-introspection-devel >= 0.6.7
+BuildRequires:	libicu-devel >= 50
 BuildRequires:	libstdc++-devel
 BuildRequires:	perl-base
+BuildRequires:	rpmbuild(macros) >= 1.605
 %if %{with python}
 BuildRequires:	python-devel >= 1:2.3
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.219
 BuildRequires:	swig-python
 %endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -127,7 +131,9 @@ cd build
 %cmake .. \
 	-DGOBJECT_INSTROSPECTION=ON \
 	-DPYTHON_EXECUTABLE=%{__python} \
-	-DPY_SITEDIR=%{py_sitedir}
+	-DPY_SITEDIR=%{py_sitedir} \
+	%{?with_db:-DWITH_BDB=ON}
+
 %{__make} -j1
 
 %install
