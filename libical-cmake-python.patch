@@ -34,13 +34,11 @@
  
  ########### install files ###############
  
---- libical-1.0.1/src/CMakeLists.txt.orig	2015-05-22 23:09:54.765318068 +0200
-+++ libical-1.0.1/src/CMakeLists.txt	2015-05-22 23:09:58.838651230 +0200
-@@ -1,6 +1,7 @@
- add_subdirectory(libical)
- add_subdirectory(libicalss)
- add_subdirectory(libicalvcal)
+--- libical-3.0.4/src/CMakeLists.txt.orig	2019-04-13 14:09:53.981161047 +0200
++++ libical-3.0.4/src/CMakeLists.txt	2019-04-13 14:11:48.303875041 +0200
+@@ -4,4 +4,5 @@
+ if(ICAL_GLIB)
+   add_subdirectory(libical-glib)
+ endif()
 +add_subdirectory(python)
  add_subdirectory(test)
- 
- if(MSVC)
