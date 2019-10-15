@@ -1,0 +1,11 @@
+--- libical-3.0.4/doc/reference/libical-glib/CMakeLists.txt.orig	2018-08-14 21:49:51.000000000 +0200
++++ libical-3.0.4/doc/reference/libical-glib/CMakeLists.txt	2019-04-16 13:31:44.445790476 +0200
+@@ -28,7 +28,7 @@
+   @ONLY
+ )
+ 
+-set(OUTPUT_DOCDIR ${SHARE_INSTALL_DIR}/gtk-doc/html/libical-glib)
++set(OUTPUT_DOCDIR ${SHARE_INSTALL_DIR}/doc/gtk-doc/html/libical-glib)
+ 
+ add_custom_command(OUTPUT xml/libical-glib-doc.bottom
+   COMMAND ${GTKDOC_SCAN} --module=libical-glib

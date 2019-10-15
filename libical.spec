@@ -1,30 +1,32 @@
 # TODO: java, perl bindings (not ready in sources)
 #
 # Conditional build:
-%bcond_with	db	# Berkeley DB storage support
 %bcond_without	python	# Python binding
 #
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	2.0.0
-Release:	4
+Version:	3.0.4
+Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/libical/libical/releases
 Source0:	https://github.com/libical/libical/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	ab743a66927284ccf42ee28847550144
+# Source0-md5:	bc4258748323dee3083e21280fa85f96
 Patch0:		%{name}-cmake-python.patch
 Patch1:		%{name}-python.patch
-Patch2:		%{name}-funcnamefix.patch
+Patch2:		%{name}-gtkdocdir.patch
 URL:		http://libical.github.io/libical/
-BuildRequires:	cmake >= 2.8.9
-%{?with_db:BuildRequires:	db-devel}
+BuildRequires:	cmake >= 3.1.0
+BuildRequires:	db-devel
+BuildRequires:	glib2-devel >= 1:2.32
 BuildRequires:	gobject-introspection-devel >= 0.6.7
 BuildRequires:	libicu-devel >= 50
 BuildRequires:	libstdc++-devel
+BuildRequires:	libxml2-devel >= 1:2.7.3
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.605
+BuildRequires:	vala
 %if %{with python}
 BuildRequires:	python-devel >= 1:2.3
 BuildRequires:	rpm-pythonprov
@@ -91,6 +93,7 @@ Requires:	libstdc++-devel
 %description c++-devel
 Header files for libical C++ bindings.
 
+%description c++-devel -l pl.UTF-8
 Pliki nagłówkowe wiązań C++ dla bibliotek libical.
 
 %package c++-static
@@ -104,6 +107,72 @@ Static libraries of libical C++ bindings.
 
 %description c++-static -l pl.UTF-8
 Statyczne biblioteki wiązań C++ dla bibliotek libical.
+
+%package glib
+Summary:	GObject interface of the libical library
+Summary(pl.UTF-8):	Interfejs GObject do biblioteki libical
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	glib2 >= 1:2.32
+Requires:	libxml2 >= 1:2.7.3
+
+%description glib
+GObject interface of the libical library.
+
+%description glib -l pl.UTF-8
+Interfejs GObject do biblioteki libical.
+
+%package glib-devel
+Summary:	Header files for libical-glib library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libical-glib
+Group:		Development/Libraries
+Requires:	%{name}-glib = %{version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	glib2-devel >= 1:2.32
+Requires:	libxml2-devel >= 1:2.7.3
+
+%description glib-devel
+Header files for libical-glib library.
+
+%description glib-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki libical-glib.
+
+%package glib-static
+Summary:	Static libical-glib library
+Summary(pl.UTF-8):	Statyczna biblioteka libical-glib
+Group:		Development/Libraries
+Requires:	%{name}-glib-devel = %{version}-%{release}
+
+%description glib-static
+Static libical-glib library.
+
+%description glib-static -l pl.UTF-8
+Statyczna biblioteka libical-glib.
+
+%package glib-apidocs
+Summary:	libical-glib API documentation
+Summary(pl.UTF-8):	Dokumentacja API biblioteki libical-glib
+Group:		Documentation
+Requires:	gtk-doc-common
+
+%description glib-apidocs
+API documentation for libical-glib library.
+
+%description glib-apidocs -l pl.UTF-8
+Dokumentacja API biblioteki libical-glib.
+
+%package -n vala-libical-glib
+Summary:	Vala API for libical-glib library
+Summary(pl.UTF-8):	API języka Vala do biblioteki libical-glib
+Group:		Development/Libraries
+Requires:	%{name}-glib-devel = %{version}-%{release}
+Requires:	vala
+
+%description -n vala-libical-glib
+Vala API for libical-glib library.
+
+%description -n vala-libical-glib -l pl.UTF-8
+API języka Vala do biblioteki libical-glib.
 
 %package -n python-libical
 Summary:	Python binding for libical
@@ -129,10 +198,11 @@ Wiązanie Pythona do biblioteki libical.
 install -d build
 cd build
 %cmake .. \
-	-DGOBJECT_INSTROSPECTION=ON \
+	-DGOBJECT_INTROSPECTION=ON \
+	-DICAL_GLIB=ON \
+	-DICAL_GLIB_VAPI=ON \
 	-DPYTHON_EXECUTABLE=%{__python} \
-	-DPY_SITEDIR=%{py_sitedir} \
-	%{?with_db:-DWITH_BDB=ON}
+	-DPY_SITEDIR=%{py_sitedir}
 
 %{__make} -j1
 
@@ -158,15 +228,19 @@ rm -rf $RPM_BUILD_ROOT
 %post	c++ -p /sbin/ldconfig
 %postun	c++ -p /sbin/ldconfig
 
+%post	glib -p /sbin/ldconfig
+%postun	glib -p /sbin/ldconfig
+
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING ReadMe.txt ReleaseNotes.txt THANKS TODO
 %attr(755,root,root) %{_libdir}/libical.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libical.so.2
+%attr(755,root,root) %ghost %{_libdir}/libical.so.3
 %attr(755,root,root) %{_libdir}/libicalss.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalss.so.2
+%attr(755,root,root) %ghost %{_libdir}/libicalss.so.3
 %attr(755,root,root) %{_libdir}/libicalvcal.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalvcal.so.2
+%attr(755,root,root) %ghost %{_libdir}/libicalvcal.so.3
+%{_libdir}/girepository-1.0/libical-%{version}.typelib
 
 %files devel
 %defattr(644,root,root,755)
@@ -226,6 +300,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libical/vcaltmp.h
 %{_includedir}/libical/vcc.h
 %{_includedir}/libical/vobject.h
+%{_datadir}/gir-1.0/libical-%{version}.gir
 %{_libdir}/cmake/LibIcal
 
 %files static
@@ -237,14 +312,15 @@ rm -rf $RPM_BUILD_ROOT
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libical_cxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libical_cxx.so.2
+%attr(755,root,root) %ghost %{_libdir}/libical_cxx.so.3
 %attr(755,root,root) %{_libdir}/libicalss_cxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalss_cxx.so.2
+%attr(755,root,root) %ghost %{_libdir}/libicalss_cxx.so.3
 
 %files c++-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libical_cxx.so
 %attr(755,root,root) %{_libdir}/libicalss_cxx.so
+%{_includedir}/libical/icalbdbset_cxx.h
 %{_includedir}/libical/icalparameter_cxx.h
 %{_includedir}/libical/icalproperty_cxx.h
 %{_includedir}/libical/icalvalue_cxx.h
@@ -256,6 +332,31 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libical_cxx.a
 %{_libdir}/libicalss_cxx.a
+
+%files glib
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libical-glib.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libical-glib.so.3
+%{_libdir}/girepository-1.0/ICalGLib-3.0.typelib
+
+%files glib-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libical-glib.so
+%{_includedir}/libical-glib
+%{_datadir}/gir-1.0/ICalGLib-3.0.gir
+%{_pkgconfigdir}/libical-glib.pc
+
+%files glib-static
+%defattr(644,root,root,755)
+%{_libdir}/libical-glib.a
+
+%files glib-apidocs
+%defattr(644,root,root,755)
+%{_gtkdocdir}/libical-glib
+
+%files -n vala-libical-glib
+%defattr(644,root,root,755)
+%{_datadir}/vala/vapi/libical-glib.vapi
 
 %if %{with python}
 %files -n python-libical
