@@ -6,13 +6,13 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	3.0.4
+Version:	3.0.6
 Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/libical/libical/releases
 Source0:	https://github.com/libical/libical/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	bc4258748323dee3083e21280fa85f96
+# Source0-md5:	b4c441549fdaf054611c6244a5900bdc
 Patch0:		%{name}-cmake-python.patch
 Patch1:		%{name}-python.patch
 Patch2:		%{name}-gtkdocdir.patch
@@ -240,7 +240,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libicalss.so.3
 %attr(755,root,root) %{_libdir}/libicalvcal.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libicalvcal.so.3
-%{_libdir}/girepository-1.0/libical-%{version}.typelib
+%{_libdir}/girepository-1.0/ICal-3.0.typelib
 
 %files devel
 %defattr(644,root,root,755)
@@ -300,7 +300,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libical/vcaltmp.h
 %{_includedir}/libical/vcc.h
 %{_includedir}/libical/vobject.h
-%{_datadir}/gir-1.0/libical-%{version}.gir
+%{_datadir}/gir-1.0/ICal-3.0.gir
 %{_libdir}/cmake/LibIcal
 
 %files static

@@ -1,11 +1,11 @@
---- libical-3.0.4/doc/reference/libical-glib/CMakeLists.txt.orig	2018-08-14 21:49:51.000000000 +0200
-+++ libical-3.0.4/doc/reference/libical-glib/CMakeLists.txt	2019-04-16 13:31:44.445790476 +0200
-@@ -28,7 +28,7 @@
-   @ONLY
- )
+--- libical-3.0.6/cmake/modules/GtkDoc.cmake.orig	2019-09-14 18:43:47.000000000 +0200
++++ libical-3.0.6/cmake/modules/GtkDoc.cmake	2019-10-15 05:35:40.930446559 +0200
+@@ -49,7 +49,7 @@
+     ${CMAKE_CURRENT_BINARY_DIR}/${_module}-docs.sgml
+     @ONLY)
  
--set(OUTPUT_DOCDIR ${SHARE_INSTALL_DIR}/gtk-doc/html/libical-glib)
-+set(OUTPUT_DOCDIR ${SHARE_INSTALL_DIR}/doc/gtk-doc/html/libical-glib)
+-  set(OUTPUT_DOCDIR ${SHARE_INSTALL_DIR}/gtk-doc/html/${_module})
++  set(OUTPUT_DOCDIR ${SHARE_INSTALL_DIR}/doc/gtk-doc/html/${_module})
  
- add_custom_command(OUTPUT xml/libical-glib-doc.bottom
-   COMMAND ${GTKDOC_SCAN} --module=libical-glib
+   set(_filedeps)
+   set(_srcdirs)
