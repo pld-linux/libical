@@ -1,5 +1,5 @@
---- libical-2.0.0/src/python/LibicalWrap.i.python	2017-09-26 21:25:34.525605103 +0200
-+++ libical-2.0.0/src/python/LibicalWrap.i	2017-09-26 21:26:33.048928356 +0200
+--- libical-3.0.6/src/python/LibicalWrap.i.orig	2019-10-15 20:39:58.908627822 +0200
++++ libical-3.0.6/src/python/LibicalWrap.i	2019-10-16 05:32:56.454846915 +0200
 @@ -24,6 +24,8 @@
  
  %module LibicalWrap
@@ -9,3 +9,13 @@
  
  %{
  #include "libical/ical.h"
+@@ -45,6 +45,9 @@
+ 
+ typedef int time_t;
+ 
++// Can't wrap va_list
++%ignore icalproperty_add_parameters(struct icalproperty_impl *prop, va_list args);
++
+ #ifndef _DLOPEN_TEST
+ %ignore icalset_register_class(icalset *set);
+ #endif
