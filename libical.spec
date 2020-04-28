@@ -6,20 +6,20 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	3.0.7
+Version:	3.0.8
 Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/libical/libical/releases
 Source0:	https://github.com/libical/libical/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	a36faa9bdd50a71c59bd8dbb3a3250bd
+# Source0-md5:	41bd1f1fcdcb4779cea478bb55cf07bf
 Patch0:		%{name}-cmake-python.patch
 Patch1:		%{name}-python.patch
 Patch2:		%{name}-gtkdocdir.patch
 URL:		http://libical.github.io/libical/
 BuildRequires:	cmake >= 3.1.0
 BuildRequires:	db-devel
-BuildRequires:	glib2-devel >= 1:2.32
+BuildRequires:	glib2-devel >= 1:2.38
 BuildRequires:	gobject-introspection-devel >= 0.6.7
 BuildRequires:	libicu-devel >= 50
 BuildRequires:	libstdc++-devel
@@ -113,7 +113,7 @@ Summary:	GObject interface of the libical library
 Summary(pl.UTF-8):	Interfejs GObject do biblioteki libical
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	glib2 >= 1:2.32
+Requires:	glib2 >= 1:2.38
 Requires:	libxml2 >= 1:2.7.3
 
 %description glib
@@ -128,7 +128,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libical-glib
 Group:		Development/Libraries
 Requires:	%{name}-glib = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.32
+Requires:	glib2-devel >= 1:2.38
 Requires:	libxml2-devel >= 1:2.7.3
 
 %description glib-devel
