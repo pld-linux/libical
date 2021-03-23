@@ -6,13 +6,13 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	3.0.8
-Release:	2
+Version:	3.0.9
+Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/libical/libical/releases
 Source0:	https://github.com/libical/libical/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	41bd1f1fcdcb4779cea478bb55cf07bf
+# Source0-md5:	734099cc0b0f52bdcc5e3e191a0d9769
 Patch0:		%{name}-cmake-python.patch
 Patch1:		%{name}-python.patch
 Patch2:		%{name}-gtkdocdir.patch
@@ -25,6 +25,7 @@ BuildRequires:	libicu-devel >= 50
 BuildRequires:	libstdc++-devel
 BuildRequires:	libxml2-devel >= 1:2.7.3
 BuildRequires:	perl-base
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	vala
 %if %{with python}
@@ -154,6 +155,7 @@ Summary:	libical-glib API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki libical-glib
 Group:		Documentation
 Requires:	gtk-doc-common
+BuildArch:	noarch
 
 %description glib-apidocs
 API documentation for libical-glib library.
@@ -167,6 +169,7 @@ Summary(pl.UTF-8):	API języka Vala do biblioteki libical-glib
 Group:		Development/Libraries
 Requires:	%{name}-glib-devel = %{version}-%{release}
 Requires:	vala
+BuildArch:	noarch
 
 %description -n vala-libical-glib
 Vala API for libical-glib library.
@@ -341,6 +344,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files glib-devel
 %defattr(644,root,root,755)
+%dir %{_libexecdir}/libical
+%attr(755,root,root) %{_libexecdir}/libical/ical-glib-src-generator
 %attr(755,root,root) %{_libdir}/libical-glib.so
 %{_includedir}/libical-glib
 %{_datadir}/gir-1.0/ICalGLib-3.0.gir
