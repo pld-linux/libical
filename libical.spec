@@ -6,13 +6,13 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	3.0.11
+Version:	3.0.12
 Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/libical/libical/releases
 Source0:	https://github.com/libical/libical/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	07b066dc8fcf5d1dc10383a81e95f3b3
+# Source0-md5:	89e06a964aadd12788ff1d93fed3d90d
 Patch0:		%{name}-cmake-python.patch
 Patch1:		%{name}-python.patch
 Patch2:		%{name}-gtkdocdir.patch
