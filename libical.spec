@@ -7,7 +7,7 @@ Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
 Version:	3.0.14
-Release:	1
+Release:	2
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/libical/libical/releases
@@ -19,6 +19,7 @@ Patch2:		%{name}-gtkdocdir.patch
 URL:		http://libical.github.io/libical/
 BuildRequires:	cmake >= 3.1.0
 BuildRequires:	db-devel
+BuildRequires:	db-cxx-devel
 BuildRequires:	glib2-devel >= 1:2.38
 BuildRequires:	gobject-introspection-devel >= 0.6.7
 BuildRequires:	libicu-devel >= 50
@@ -52,6 +53,7 @@ Summary:	libical header files
 Summary(pl.UTF-8):	Pliki nagłówkowe libical
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+%requires_ge db-devel
 
 %description devel
 libical header files.
@@ -90,6 +92,7 @@ Group:		Development/Libraries
 Requires:	%{name}-c++ = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	libstdc++-devel
+%requires_ge db-cxx-devel
 
 %description c++-devel
 Header files for libical C++ bindings.
