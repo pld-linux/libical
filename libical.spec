@@ -6,13 +6,13 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	3.0.16
-Release:	2
+Version:	3.0.17
+Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/libical/libical/releases
 Source0:	https://github.com/libical/libical/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	3799f9dde1db6f7eb0cb112b5e14ab60
+# Source0-md5:	aab3e2c80a5a61c744204675bff19ae0
 Patch0:		%{name}-cmake-python.patch
 Patch1:		%{name}-python.patch
 Patch2:		%{name}-gtkdocdir.patch
@@ -26,6 +26,7 @@ BuildRequires:	libicu-devel >= 50
 BuildRequires:	libstdc++-devel
 BuildRequires:	libxml2-devel >= 1:2.7.3
 BuildRequires:	perl-base
+BuildRequires:	pkgconfig
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	vala
