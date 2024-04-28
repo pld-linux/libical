@@ -1,6 +1,7 @@
 # TODO: java, perl bindings (not ready in sources)
 #
 # Conditional build:
+%bcond_without	apidocs	# API documentation
 %bcond_without	python	# Python binding
 #
 Summary:	libical library
@@ -22,14 +23,14 @@ BuildRequires:	db-devel
 BuildRequires:	db-cxx-devel
 BuildRequires:	glib2-devel >= 1:2.38
 BuildRequires:	gobject-introspection-devel >= 0.6.7
-BuildRequires:	gtk-doc
+%{?with_apidocs:BuildRequires:	gtk-doc}
 BuildRequires:	libicu-devel >= 50
 BuildRequires:	libstdc++-devel
 BuildRequires:	libxml2-devel >= 1:2.7.3
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 BuildRequires:	rpm-build >= 4.6
-BuildRequires:	rpmbuild(macros) >= 1.605
+BuildRequires:	rpmbuild(macros) >= 1.742
 BuildRequires:	vala
 %if %{with python}
 BuildRequires:	python-devel >= 1:2.3
@@ -206,6 +207,7 @@ Wiązanie Pythona do biblioteki libical.
 install -d build
 cd build
 %cmake .. \
+	%{cmake_on_off apidocs ICAL_BUILD_DOCS} \
 	-DGOBJECT_INTROSPECTION=ON \
 	-DICAL_GLIB=ON \
 	-DICAL_GLIB_VAPI=ON \
@@ -363,9 +365,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libical-glib.a
 
+%if %{with apidocs}
 %files glib-apidocs
 %defattr(644,root,root,755)
 %{_gtkdocdir}/libical-glib
+%endif
 
 %files -n vala-libical-glib
 %defattr(644,root,root,755)
