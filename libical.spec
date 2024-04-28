@@ -1,8 +1,9 @@
 # TODO: java, perl bindings (not ready in sources)
 #
 # Conditional build:
-%bcond_without	apidocs	# API documentation
-%bcond_without	python	# Python binding
+%bcond_without	apidocs		# API documentation
+%bcond_without	python		# Python binding
+%bcond_without	static_libs	# static libraries
 #
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
@@ -208,6 +209,7 @@ install -d build
 cd build
 %cmake .. \
 	%{cmake_on_off apidocs ICAL_BUILD_DOCS} \
+	-DSHARED_ONLY:BOOL=%{?with_static_libs:OFF}%{!?with_static_libs:ON} \
 	-DGOBJECT_INTROSPECTION=ON \
 	-DICAL_GLIB=ON \
 	-DICAL_GLIB_VAPI=ON \
@@ -316,11 +318,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gir-1.0/ICal-3.0.gir
 %{_libdir}/cmake/LibIcal
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libical.a
 %{_libdir}/libicalss.a
 %{_libdir}/libicalvcal.a
+%endif
 
 %files c++
 %defattr(644,root,root,755)
@@ -341,10 +345,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libical/icptrholder_cxx.h
 %{_includedir}/libical/vcomponent_cxx.h
 
+%if %{with static_libs}
 %files c++-static
 %defattr(644,root,root,755)
 %{_libdir}/libical_cxx.a
 %{_libdir}/libicalss_cxx.a
+%endif
 
 %files glib
 %defattr(644,root,root,755)
@@ -361,9 +367,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gir-1.0/ICalGLib-3.0.gir
 %{_pkgconfigdir}/libical-glib.pc
 
+%if %{with static_libs}
 %files glib-static
 %defattr(644,root,root,755)
 %{_libdir}/libical-glib.a
+%endif
 
 %if %{with apidocs}
 %files glib-apidocs
