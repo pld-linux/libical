@@ -6,18 +6,18 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	3.0.17
+Version:	3.0.18
 Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/libical/libical/releases
 Source0:	https://github.com/libical/libical/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	aab3e2c80a5a61c744204675bff19ae0
+# Source0-md5:	cc790ea49701df0335d42b89d57c04bc
 Patch0:		%{name}-cmake-python.patch
 Patch1:		%{name}-python.patch
 Patch2:		%{name}-gtkdocdir.patch
-URL:		http://libical.github.io/libical/
-BuildRequires:	cmake >= 3.1.0
+URL:		https://libical.github.io/libical/
+BuildRequires:	cmake >= 3.5.0
 BuildRequires:	db-devel
 BuildRequires:	db-cxx-devel
 BuildRequires:	glib2-devel >= 1:2.38
