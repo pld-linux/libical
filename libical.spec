@@ -22,6 +22,7 @@ URL:		https://libical.github.io/libical/
 BuildRequires:	cmake >= 3.5.0
 BuildRequires:	db-devel
 BuildRequires:	db-cxx-devel
+%{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	glib2-devel >= 1:2.38
 BuildRequires:	gobject-introspection-devel >= 0.6.7
 %{?with_apidocs:BuildRequires:	gtk-doc}
@@ -76,6 +77,18 @@ Static version of libical library.
 
 %description static -l pl.UTF-8
 Statyczna wersja biblioteki libical.
+
+%package apidocs
+Summary:	libical API documentation
+Summary(pl.UTF-8):	Dokumentacja API biblioteki libical
+Group:		Documentation
+BuildArch:	noarch
+
+%description apidocs
+API documentation for libical library.
+
+%description apidocs -l pl.UTF-8
+Dokumentacja API biblioteki libical.
 
 %package c++
 Summary:	C++ bindings for libical libraries
@@ -218,6 +231,8 @@ cd build
 
 %{__make} -j1
 
+%{?with_apidocs:%{__make} -j1 docs}
+
 %install
 rm -rf $RPM_BUILD_ROOT
 
@@ -324,6 +339,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libical.a
 %{_libdir}/libicalss.a
 %{_libdir}/libicalvcal.a
+%endif
+
+%if %{with apidocs}
+%files apidocs
+%defattr(644,root,root,755)
+%doc build/apidocs/html/*
 %endif
 
 %files c++
