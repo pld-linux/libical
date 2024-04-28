@@ -22,6 +22,7 @@ BuildRequires:	db-devel
 BuildRequires:	db-cxx-devel
 BuildRequires:	glib2-devel >= 1:2.38
 BuildRequires:	gobject-introspection-devel >= 0.6.7
+BuildRequires:	gtk-doc
 BuildRequires:	libicu-devel >= 50
 BuildRequires:	libstdc++-devel
 BuildRequires:	libxml2-devel >= 1:2.7.3
