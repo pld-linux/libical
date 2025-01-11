@@ -8,13 +8,13 @@
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	3.0.18
+Version:	3.0.19
 Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/libical/libical/releases
 Source0:	https://github.com/libical/libical/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	cc790ea49701df0335d42b89d57c04bc
+# Source0-md5:	f671e38e804bf467347807d8c8d057f7
 Patch0:		%{name}-cmake-python.patch
 Patch1:		%{name}-python.patch
 Patch2:		%{name}-gtkdocdir.patch
@@ -212,10 +212,10 @@ Wiązanie Pythona do biblioteki libical.
 %prep
 %setup -q
 %if %{with python}
-%patch0 -p1
-%patch1 -p1
+%patch -P0 -p1
+%patch -P1 -p1
 %endif
-%patch2 -p1
+%patch -P2 -p1
 
 %build
 install -d build
