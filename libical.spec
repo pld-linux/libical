@@ -245,7 +245,7 @@ cd build-py2
 	-DPYTHON_EXECUTABLE=%{__python} \
 	-DPY_SITEDIR=%{py_sitedir}
 
-%{__make} -j1
+%{__make}
 cd ..
 %endif
 
@@ -260,13 +260,17 @@ cd build
 	-DPYTHON_EXECUTABLE=%{__python3} \
 	-DPY_SITEDIR=%{py3_sitedir}
 
+%{__make} -j1
+
 %{?with_apidocs:%{__make} -j1 docs}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
+%if %{with python2}
 %{__make} -C build-py2 install \
 	DESTDIR=$RPM_BUILD_ROOT
+%endif
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
