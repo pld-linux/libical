@@ -1,6 +1,6 @@
 --- libical-3.0.16/src/python/CMakeLists.txt.orig	2023-03-04 19:38:26.490595543 +0100
 +++ libical-3.0.16/src/python/CMakeLists.txt	2023-03-04 19:41:03.049747390 +0100
-@@ -6,8 +6,19 @@ include_directories(
+@@ -6,18 +6,28 @@ include_directories(
  
  ########### next target ###############
  
@@ -21,8 +21,9 @@
  )
  
  add_library(LibicalWrap ${LIBRARY_TYPE} ${LibicalWrap_LIB_SRCS})
-@@ -15,9 +26,8 @@ add_library(LibicalWrap ${LIBRARY_TYPE}
- target_link_libraries(LibicalWrap)
+ 
+-target_link_libraries(LibicalWrap)
++target_link_libraries(LibicalWrap icalss ical)
  
  set_target_properties(LibicalWrap PROPERTIES
 -  VERSION ${LIBICAL_LIB_VERSION_STRING}

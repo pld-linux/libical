@@ -9,13 +9,29 @@
  
  %{
  #include "libical/ical.h"
-@@ -45,6 +45,9 @@
+@@ -45,6 +45,14 @@
  
  typedef int time_t;
  
 +// Can't wrap va_list
 +%ignore icalproperty_add_parameters(struct icalproperty_impl *prop, va_list args);
++// not exported
++%ignore icalfileset_options_default;
++%ignore print_date_to_string;
++%ignore print_datetime_to_string;
++%ignore icaltimezone_tzid_prefix;
 +
  #ifndef _DLOPEN_TEST
  %ignore icalset_register_class(icalset *set);
  #endif
+--- libical-3.0.20/src/libicalss/icalbdbset.h.orig	2025-03-10 17:08:27.000000000 +0100
++++ libical-3.0.20/src/libicalss/icalbdbset.h	2025-04-10 22:32:41.961141924 +0200
+@@ -144,8 +144,6 @@ LIBICAL_ICALSS_EXPORT icalcomponent *ica
+ 
+ LIBICAL_ICALSS_EXPORT icalcomponent *icalbdbsetiter_to_next(icalset *set, icalsetiter *i);
+ 
+-LIBICAL_ICALSS_EXPORT icalcomponent *icalbdbsetiter_to_prior(icalset *set, icalsetiter *i);
+-
+ /* Return a reference to the internal component. You probably should
+    not be using this. */
+ 

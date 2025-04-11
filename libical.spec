@@ -2,19 +2,25 @@
 #
 # Conditional build:
 %bcond_without	apidocs		# API documentation
-%bcond_without	python		# Python binding
+%bcond_without	python		# Python binding (any)
+%bcond_without	python2		# CPython 2.x binding
+%bcond_without	python3		# CPython 3.x binding
 %bcond_without	static_libs	# static libraries
 #
+%if %{without python}
+%undefine	with_python2
+%undefine	with_python3
+%endif
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	3.0.19
-Release:	2
+Version:	3.0.20
+Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/libical/libical/releases
 Source0:	https://github.com/libical/libical/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	f671e38e804bf467347807d8c8d057f7
+# Source0-md5:	539a8a293d344e7aa8ccf3740494a46d
 Patch0:		%{name}-cmake-python.patch
 Patch1:		%{name}-python.patch
 Patch2:		%{name}-gtkdocdir.patch
@@ -31,14 +37,13 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libxml2-devel >= 1:2.7.3
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
+%{?with_python2:BuildRequires:	python-devel >= 1:2.3}
+%{?with_python3:BuildRequires:	python3-devel >= 1:3.2}
 BuildRequires:	rpm-build >= 4.6
-BuildRequires:	rpmbuild(macros) >= 1.742
+%{?with_python:BuildRequires:	rpm-pythonprov}
+BuildRequires:	rpmbuild(macros) >= 2.047
+%{?with_python:BuildRequires:	swig-python >= 2}
 BuildRequires:	vala
-%if %{with python}
-BuildRequires:	python-devel >= 1:2.3
-BuildRequires:	rpm-pythonprov
-BuildRequires:	swig-python
-%endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -198,16 +203,28 @@ Vala API for libical-glib library.
 API języka Vala do biblioteki libical-glib.
 
 %package -n python-libical
-Summary:	Python binding for libical
-Summary(pl.UTF-8):	Wiązanie Pythona do biblioteki libical
+Summary:	Python 2 binding for libical
+Summary(pl.UTF-8):	Wiązanie Pythona 2 do biblioteki libical
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 
 %description -n python-libical
-Python binding for libical.
+Python 2 binding for libical.
 
 %description -n python-libical -l pl.UTF-8
-Wiązanie Pythona do biblioteki libical.
+Wiązanie Pythona 2 do biblioteki libical.
+
+%package -n python3-libical
+Summary:	Python 3 binding for libical
+Summary(pl.UTF-8):	Wiązanie Pythona 3 do biblioteki libical
+Group:		Libraries/Python
+Requires:	%{name} = %{version}-%{release}
+
+%description -n python3-libical
+Python 3 binding for libical.
+
+%description -n python3-libical -l pl.UTF-8
+Wiązanie Pythona 3 do biblioteki libical.
 
 %prep
 %setup -q
@@ -218,23 +235,38 @@ Wiązanie Pythona do biblioteki libical.
 %patch -P2 -p1
 
 %build
-install -d build
-cd build
+%if %{with python2}
+install -d build-py2
+cd build-py2
 %cmake .. \
-	%{cmake_on_off apidocs ICAL_BUILD_DOCS} \
-	-DSHARED_ONLY:BOOL=%{?with_static_libs:OFF}%{!?with_static_libs:ON} \
-	-DGOBJECT_INTROSPECTION=ON \
-	-DICAL_GLIB=ON \
-	-DICAL_GLIB_VAPI=ON \
+	-DICAL_BUILD_DOCS=OFF \
+	-DSHARED_ONLY=ON \
+	-DICAL_GLIB=OFF \
 	-DPYTHON_EXECUTABLE=%{__python} \
 	-DPY_SITEDIR=%{py_sitedir}
 
 %{__make} -j1
+cd ..
+%endif
+
+install -d build
+cd build
+%cmake .. \
+	-DICAL_BUILD_DOCS:BOOL=%{__ON_OFF apidocs} \
+	-DSHARED_ONLY:BOOL=%{__ON_OFF_not static_libs} \
+	-DGOBJECT_INTROSPECTION=ON \
+	-DICAL_GLIB=ON \
+	-DICAL_GLIB_VAPI=ON \
+	-DPYTHON_EXECUTABLE=%{__python3} \
+	-DPY_SITEDIR=%{py3_sitedir}
 
 %{?with_apidocs:%{__make} -j1 docs}
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+%{__make} -C build-py2 install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -242,11 +274,17 @@ rm -rf $RPM_BUILD_ROOT
 # disable completeness check incompatible with split packaging
 %{__sed} -i -e '/^foreach(target .*IMPORT_CHECK_TARGETS/,/^endforeach/d; /^unset(_IMPORT_CHECK_TARGETS)/d' $RPM_BUILD_ROOT%{_libdir}/cmake/LibIcal/{IcalGlibSrcGenerator,LibIcalTargets}.cmake
 
-%if %{with python}
+%if %{with python2}
 # not installed by cmake build system
 install -d $RPM_BUILD_ROOT%{py_sitescriptdir}/libical
 cp -p src/python/*.py build/src/python/*.py $RPM_BUILD_ROOT%{py_sitescriptdir}/libical
 %py_postclean
+%endif
+
+%if %{with python3}
+# not installed by cmake build system
+install -d $RPM_BUILD_ROOT%{py3_sitescriptdir}/libical
+cp -p src/python/*.py build/src/python/*.py $RPM_BUILD_ROOT%{py3_sitescriptdir}/libical
 %endif
 
 %clean
@@ -404,9 +442,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_datadir}/vala/vapi/libical-glib.vapi
 
-%if %{with python}
+%if %{with python2}
 %files -n python-libical
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/_LibicalWrap.so
 %{py_sitescriptdir}/libical
+%endif
+
+%if %{with python3}
+%files -n python3-libical
+%defattr(644,root,root,755)
+%attr(755,root,root) %{py3_sitedir}/_LibicalWrap.so
+%{py3_sitescriptdir}/libical
 %endif
