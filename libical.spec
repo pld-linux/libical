@@ -6,6 +6,7 @@
 %bcond_without	python2		# CPython 2.x binding
 %bcond_without	python3		# CPython 3.x binding
 %bcond_without	static_libs	# static libraries
+%bcond_without	bdb		# Berkeley DB support
 #
 %if %{without python}
 %undefine	with_python2
@@ -26,8 +27,8 @@ Patch1:		%{name}-python.patch
 Patch2:		%{name}-gtkdocdir.patch
 URL:		https://libical.github.io/libical/
 BuildRequires:	cmake >= 3.5.0
-BuildRequires:	db-devel
-BuildRequires:	db-cxx-devel
+%{?with_bdb:BuildRequires:	db-devel}
+%{?with_bdb:BuildRequires:	db-cxx-devel}
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	glib2-devel >= 1:2.38
 BuildRequires:	gobject-introspection-devel >= 0.6.7
@@ -63,7 +64,9 @@ Summary:	libical header files
 Summary(pl.UTF-8):	Pliki nagłówkowe libical
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+%if %{with bdb}
 %requires_ge db-devel
+%endif
 
 %description devel
 libical header files.
@@ -114,7 +117,9 @@ Group:		Development/Libraries
 Requires:	%{name}-c++ = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	libstdc++-devel
+%if %{with bdb}
 %requires_ge db-cxx-devel
+%endif
 
 %description c++-devel
 Header files for libical C++ bindings.
@@ -258,7 +263,8 @@ cd build
 	-DICAL_GLIB=ON \
 	-DICAL_GLIB_VAPI=ON \
 	-DPYTHON_EXECUTABLE=%{__python3} \
-	-DPY_SITEDIR=%{py3_sitedir}
+	-DPY_SITEDIR=%{py3_sitedir} \
+	%{!?with_bdb:-DCMAKE_DISABLE_FIND_PACKAGE_BerkeleyDB=true}
 
 %{__make} -j1
 
@@ -400,7 +406,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libical_cxx.so
 %attr(755,root,root) %{_libdir}/libicalss_cxx.so
+%if %{with bdb}
 %{_includedir}/libical/icalbdbset_cxx.h
+%endif
 %{_includedir}/libical/icalparameter_cxx.h
 %{_includedir}/libical/icalproperty_cxx.h
 %{_includedir}/libical/icalvalue_cxx.h
