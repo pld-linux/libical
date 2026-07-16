@@ -1,50 +1,39 @@
-# TODO: java, perl bindings (not ready in sources)
+# TODO: perl bindings (not ready in sources)
 #
 # Conditional build:
 %bcond_without	apidocs		# API documentation
-%bcond_without	python		# Python binding (any)
-%bcond_without	python2		# CPython 2.x binding
-%bcond_without	python3		# CPython 3.x binding
 %bcond_without	static_libs	# static libraries
 %bcond_without	bdb		# Berkeley DB support
+%bcond_without	java		# Java binding
 #
-%if %{without python}
-%undefine	with_python2
-%undefine	with_python3
-%endif
+%{?with_java:%{?use_default_jdk}}
 Summary:	libical library
 Summary(pl.UTF-8):	Biblioteka libical
 Name:		libical
-Version:	3.0.20
-Release:	3
+Version:	4.0.3
+Release:	1
 License:	MPL v1.0 or LGPL v2.1
 Group:		Libraries
 #Source0Download: https://github.com/libical/libical/releases
 Source0:	https://github.com/libical/libical/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	539a8a293d344e7aa8ccf3740494a46d
-Patch0:		%{name}-cmake-python.patch
-Patch1:		%{name}-python.patch
-Patch2:		%{name}-gtkdocdir.patch
+# Source0-md5:	2d25dd342c4f193f957e2d65491b03d2
 URL:		https://libical.github.io/libical/
-BuildRequires:	cmake >= 3.5.0
+BuildRequires:	cmake >= 3.20.0
 %{?with_bdb:BuildRequires:	db-devel}
 %{?with_bdb:BuildRequires:	db-cxx-devel}
 %{?with_apidocs:BuildRequires:	doxygen}
-BuildRequires:	glib2-devel >= 1:2.38
+%{?with_apidocs:BuildRequires:	gi-docgen}
+BuildRequires:	glib2-devel >= 1:2.44
 BuildRequires:	gobject-introspection-devel >= 0.6.7
-%{?with_apidocs:BuildRequires:	gtk-doc}
 BuildRequires:	libicu-devel >= 50
-BuildRequires:	libstdc++-devel
+BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libxml2-devel >= 1:2.7.3
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
-%{?with_python2:BuildRequires:	python-devel >= 1:2.3}
-%{?with_python3:BuildRequires:	python3-devel >= 1:3.2}
 BuildRequires:	rpm-build >= 4.6
-%{?with_python:BuildRequires:	rpm-pythonprov}
 BuildRequires:	rpmbuild(macros) >= 2.047
-%{?with_python:BuildRequires:	swig-python >= 2}
 BuildRequires:	vala
+%{?with_java:%buildrequires_jdk}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -144,7 +133,7 @@ Summary:	GObject interface of the libical library
 Summary(pl.UTF-8):	Interfejs GObject do biblioteki libical
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	glib2 >= 1:2.38
+Requires:	glib2 >= 1:2.44
 Requires:	libxml2 >= 1:2.7.3
 
 %description glib
@@ -159,7 +148,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libical-glib
 Group:		Development/Libraries
 Requires:	%{name}-glib = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.38
+Requires:	glib2-devel >= 1:2.44
 Requires:	libxml2-devel >= 1:2.7.3
 
 %description glib-devel
@@ -207,94 +196,67 @@ Vala API for libical-glib library.
 %description -n vala-libical-glib -l pl.UTF-8
 API języka Vala do biblioteki libical-glib.
 
-%package -n python-libical
-Summary:	Python 2 binding for libical
-Summary(pl.UTF-8):	Wiązanie Pythona 2 do biblioteki libical
-Group:		Libraries/Python
+%package -n java-libical
+Summary:	Java binding for libical
+Summary(pl.UTF-8):	Wiązanie Javy do biblioteki libical
+Group:		Libraries/Java
 Requires:	%{name} = %{version}-%{release}
 
-%description -n python-libical
-Python 2 binding for libical.
+%description -n java-libical
+Java binding for libical.
 
-%description -n python-libical -l pl.UTF-8
-Wiązanie Pythona 2 do biblioteki libical.
-
-%package -n python3-libical
-Summary:	Python 3 binding for libical
-Summary(pl.UTF-8):	Wiązanie Pythona 3 do biblioteki libical
-Group:		Libraries/Python
-Requires:	%{name} = %{version}-%{release}
-
-%description -n python3-libical
-Python 3 binding for libical.
-
-%description -n python3-libical -l pl.UTF-8
-Wiązanie Pythona 3 do biblioteki libical.
+%description -n java-libical -l pl.UTF-8
+Wiązanie Javy do biblioteki libical.
 
 %prep
 %setup -q
-%if %{with python}
-%patch -P0 -p1
-%patch -P1 -p1
-%endif
-%patch -P2 -p1
 
 %build
-%if %{with python2}
-install -d build-py2
-cd build-py2
-%cmake .. \
+%if %{with static_libs}
+%cmake -B build-static \
+	%{!?with_bdb:-DCMAKE_DISABLE_FIND_PACKAGE_BerkeleyDB=ON} \
+	-DLIBICAL_GOBJECT_INTROSPECTION=OFF \
 	-DICAL_BUILD_DOCS=OFF \
-	-DSHARED_ONLY=ON \
-	-DICAL_GLIB=OFF \
-	-DPYTHON_EXECUTABLE=%{__python} \
-	-DPY_SITEDIR=%{py_sitedir}
+	-DLIBICAL_GLIB=ON \
+	-DLIBICAL_GLIB_BUILD_DOCS=OFF \
+	-DLIBICAL_JAVA_BINDINGS=OFF \
+	-DLIBICAL_STATIC=ON
 
-%{__make}
-cd ..
+%{__make} -C build-static
 %endif
 
-install -d build
-cd build
-%cmake .. \
+%cmake -B build \
+	%{!?with_bdb:-DCMAKE_DISABLE_FIND_PACKAGE_BerkeleyDB=ON} \
+	-DLIBICAL_GOBJECT_INTROSPECTION=ON \
 	-DICAL_BUILD_DOCS:BOOL=%{__ON_OFF apidocs} \
-	-DSHARED_ONLY:BOOL=%{__ON_OFF_not static_libs} \
-	-DGOBJECT_INTROSPECTION=ON \
-	-DICAL_GLIB=ON \
-	-DICAL_GLIB_VAPI=ON \
-	-DPYTHON_EXECUTABLE=%{__python3} \
-	-DPY_SITEDIR=%{py3_sitedir} \
-	%{!?with_bdb:-DCMAKE_DISABLE_FIND_PACKAGE_BerkeleyDB=true}
+	-DLIBICAL_GLIB=ON \
+	-DLIBICAL_GLIB_VAPI=ON
 
-%{__make} -j1
+%{__make} -C build -j1
 
-%{?with_apidocs:%{__make} -j1 docs}
+%if %{with apidocs}
+%{__make} -C build -j1 docs
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%if %{with python2}
-%{__make} -C build-py2 install \
+%if %{with static_libs}
+%{__make} -C build-static install \
 	DESTDIR=$RPM_BUILD_ROOT
 %endif
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-# disable completeness check incompatible with split packaging
-%{__sed} -i -e '/^foreach(target .*IMPORT_CHECK_TARGETS/,/^endforeach/d; /^unset(_IMPORT_CHECK_TARGETS)/d' $RPM_BUILD_ROOT%{_libdir}/cmake/LibIcal/{IcalGlibSrcGenerator,LibIcalTargets}.cmake
-
-%if %{with python2}
-# not installed by cmake build system
-install -d $RPM_BUILD_ROOT%{py_sitescriptdir}/libical
-cp -p src/python/*.py build/src/python/*.py $RPM_BUILD_ROOT%{py_sitescriptdir}/libical
-%py_postclean
+%if %{with apidocs}
+install -d $RPM_BUILD_ROOT%{_gidocdir}
+%{__mv} $RPM_BUILD_ROOT%{_docdir}/libical-glib $RPM_BUILD_ROOT%{_gidocdir}
 %endif
 
-%if %{with python3}
-# not installed by cmake build system
-install -d $RPM_BUILD_ROOT%{py3_sitescriptdir}/libical
-cp -p src/python/*.py build/src/python/*.py $RPM_BUILD_ROOT%{py3_sitescriptdir}/libical
+%if %{with java}
+install -d $RPM_BUILD_ROOT%{_javadir}
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/libical.jar $RPM_BUILD_ROOT%{_javadir}
 %endif
 
 %clean
@@ -311,22 +273,24 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS COPYING README.md ReleaseNotes.txt THANKS TODO
-%attr(755,root,root) %{_libdir}/libical.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libical.so.3
-%attr(755,root,root) %{_libdir}/libicalss.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalss.so.3
-%attr(755,root,root) %{_libdir}/libicalvcal.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalvcal.so.3
-%{_libdir}/girepository-1.0/ICal-3.0.typelib
+%doc 3RDPARTY.md CHANGELOG.md CONTRIBUTORS.md README.md LICENSES/BSD-3-Clause.txt docs/%{version}/*.md
+%{_libdir}/libical.so.*.*.*
+%ghost %{_libdir}/libical.so.4.0
+%{_libdir}/libicalss.so.*.*.*
+%ghost %{_libdir}/libicalss.so.4.0
+%{_libdir}/libicalvcal.so.*.*.*
+%ghost %{_libdir}/libicalvcal.so.4.0
+%{_libdir}/libicalvcard.so.*.*.*
+%ghost %{_libdir}/libicalvcard.so.4.0
+%{_libdir}/girepository-1.0/ICal-4.0.typelib
 
 %files devel
 %defattr(644,root,root,755)
-%doc doc/UsingLibical*
-%attr(755,root,root) %{_libdir}/libical.so
-%attr(755,root,root) %{_libdir}/libicalss.so
-%attr(755,root,root) %{_libdir}/libicalvcal.so
-%{_pkgconfigdir}/libical.pc
+%doc docs/{MigrationGuide_to_4.md,UsingLibical.md}
+%{_libdir}/libical.so
+%{_libdir}/libicalss.so
+%{_libdir}/libicalvcal.so
+%{_libdir}/libicalvcard.so
 %dir %{_includedir}/libical
 # libical
 %{_includedir}/libical/ical.h
@@ -337,25 +301,26 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libical/icalderivedproperty.h
 %{_includedir}/libical/icalderivedvalue.h
 %{_includedir}/libical/icalduration.h
+%{_includedir}/libical/icalenumarray.h
 %{_includedir}/libical/icalenums.h
 %{_includedir}/libical/icalerror.h
-%{_includedir}/libical/icallangbind.h
+%{_includedir}/libical/icallimits.h
 %{_includedir}/libical/icalmemory.h
-%{_includedir}/libical/icalmime.h
 %{_includedir}/libical/icalparameter.h
 %{_includedir}/libical/icalparser.h
 %{_includedir}/libical/icalperiod.h
 %{_includedir}/libical/icalproperty.h
 %{_includedir}/libical/icalrecur.h
 %{_includedir}/libical/icalrestriction.h
+%{_includedir}/libical/icalstrarray.h
 %{_includedir}/libical/icaltime.h
+%{_includedir}/libical/icaltime_p.h
 %{_includedir}/libical/icaltimezone.h
 %{_includedir}/libical/icaltypes.h
-%{_includedir}/libical/icaltz-util.h
 %{_includedir}/libical/icalvalue.h
+%{_includedir}/libical/libical_deprecated.h
 %{_includedir}/libical/libical_ical_export.h
-%{_includedir}/libical/pvl.h
-%{_includedir}/libical/sspm.h
+%{_includedir}/libical/libical_sentinel.h
 # libicalss
 %{_includedir}/libical/icalcalendar.h
 %{_includedir}/libical/icalclassify.h
@@ -378,8 +343,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libical/vcaltmp.h
 %{_includedir}/libical/vcc.h
 %{_includedir}/libical/vobject.h
-%{_datadir}/gir-1.0/ICal-3.0.gir
+# libicalvcard
+%{_includedir}/libical/libical_vcard_export.h
+%{_includedir}/libical/vcard*.h
+%{_datadir}/gir-1.0/ICal-4.0.gir
 %{_libdir}/cmake/LibIcal
+%{_pkgconfigdir}/libical.pc
+%{_pkgconfigdir}/libicalss.pc
+%{_pkgconfigdir}/libicalvcal.pc
+%{_pkgconfigdir}/libicalvcard.pc
 
 %if %{with static_libs}
 %files static
@@ -387,6 +359,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libical.a
 %{_libdir}/libicalss.a
 %{_libdir}/libicalvcal.a
+%{_libdir}/libicalvcard.a
 %endif
 
 %if %{with apidocs}
@@ -397,24 +370,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %files c++
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libical_cxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libical_cxx.so.3
-%attr(755,root,root) %{_libdir}/libicalss_cxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicalss_cxx.so.3
+%{_libdir}/libical_cxx.so.*.*.*
+%ghost %{_libdir}/libical_cxx.so.4.0
+%{_libdir}/libicalss_cxx.so.*.*.*
+%ghost %{_libdir}/libicalss_cxx.so.4.0
 
 %files c++-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libical_cxx.so
-%attr(755,root,root) %{_libdir}/libicalss_cxx.so
-%if %{with bdb}
-%{_includedir}/libical/icalbdbset_cxx.h
-%endif
-%{_includedir}/libical/icalparameter_cxx.h
-%{_includedir}/libical/icalproperty_cxx.h
-%{_includedir}/libical/icalvalue_cxx.h
-%{_includedir}/libical/icalspanlist_cxx.h
-%{_includedir}/libical/icptrholder_cxx.h
-%{_includedir}/libical/vcomponent_cxx.h
+%{_libdir}/libical_cxx.so
+%{_libdir}/libicalss_cxx.so
+%{_includedir}/libical/icalparameter_cxx.hpp
+%{_includedir}/libical/icalproperty_cxx.hpp
+%{_includedir}/libical/icalvalue_cxx.hpp
+%{_includedir}/libical/icalspanlist_cxx.hpp
+%{_includedir}/libical/icptrholder_cxx.hpp
+%{_includedir}/libical/vcomponent_cxx.hpp
 
 %if %{with static_libs}
 %files c++-static
@@ -425,17 +395,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %files glib
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libical-glib.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libical-glib.so.3
-%{_libdir}/girepository-1.0/ICalGLib-3.0.typelib
+%{_libdir}/libical-glib.so.*.*.*
+%ghost %{_libdir}/libical-glib.so.4.0
+%{_libdir}/girepository-1.0/ICalGLib-4.0.typelib
 
 %files glib-devel
 %defattr(644,root,root,755)
 %dir %{_libexecdir}/libical
 %attr(755,root,root) %{_libexecdir}/libical/ical-glib-src-generator
-%attr(755,root,root) %{_libdir}/libical-glib.so
+%{_libdir}/libical-glib.so
 %{_includedir}/libical-glib
-%{_datadir}/gir-1.0/ICalGLib-3.0.gir
+%{_datadir}/gir-1.0/ICalGLib-4.0.gir
 %{_pkgconfigdir}/libical-glib.pc
 
 %if %{with static_libs}
@@ -447,23 +417,18 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with apidocs}
 %files glib-apidocs
 %defattr(644,root,root,755)
-%{_gtkdocdir}/libical-glib
+%{_gidocdir}/libical-glib
 %endif
 
 %files -n vala-libical-glib
 %defattr(644,root,root,755)
 %{_datadir}/vala/vapi/libical-glib.vapi
 
-%if %{with python2}
-%files -n python-libical
+%if %{with java}
+%files -n java-libical
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/_LibicalWrap.so
-%{py_sitescriptdir}/libical
-%endif
-
-%if %{with python3}
-%files -n python3-libical
-%defattr(644,root,root,755)
-%attr(755,root,root) %{py3_sitedir}/_LibicalWrap.so
-%{py3_sitescriptdir}/libical
+%{_libdir}/libical_jni.so.*.*.*
+%ghost %{_libdir}/libical_jni.so.4.0
+%{_libdir}/libical_jni.so
+%{_javadir}/libical.jar
 %endif
