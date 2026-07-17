@@ -208,6 +208,22 @@ Java binding for libical.
 %description -n java-libical -l pl.UTF-8
 Wiązanie Javy do biblioteki libical.
 
+%package vzic
+Summary:	vzic program to convert the IANA timezone database info VTIMEZONE files
+Summary(pl.UTF-8):	Program vzic do konwersji bazy danych stref czasowych IANA do plików VTIMEZONE
+Group:		Applications/File
+Requires:	glib2 >= 1:2.44
+
+%description vzic
+vzic program to convert the IANA (formerly Olson) timezone database
+info VTIMEZONE files compatible with the iCalendar specification (RFC
+2445).
+
+%description vzic -l pl.UTF-8
+Program vzic do konwersji bazy danych stref czasowych IANA (dawniej
+znanej pod nazwą Olson) do plików VTIMEZONE, zgodnych ze specyfikacją
+iCalendar (RFC 2445).
+
 %prep
 %setup -q
 
@@ -227,6 +243,7 @@ Wiązanie Javy do biblioteki libical.
 
 %cmake -B build \
 	%{!?with_bdb:-DCMAKE_DISABLE_FIND_PACKAGE_BerkeleyDB=ON} \
+	-DLIBICAL_BUILD_VZIC=ON \
 	-DLIBICAL_GOBJECT_INTROSPECTION=ON \
 	-DICAL_BUILD_DOCS:BOOL=%{__ON_OFF apidocs} \
 	-DLIBICAL_GLIB=ON \
@@ -248,6 +265,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+install -D build/bin/vzic $RPM_BUILD_ROOT%{_bindir}/vzic
 
 %if %{with apidocs}
 install -d $RPM_BUILD_ROOT%{_gidocdir}
@@ -432,3 +451,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libical_jni.so
 %{_javadir}/libical.jar
 %endif
+
+%files vzic
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/vzic
