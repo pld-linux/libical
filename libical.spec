@@ -454,4 +454,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %files vzic
 %defattr(644,root,root,755)
+%doc vzic/README.md
 %attr(755,root,root) %{_bindir}/vzic
